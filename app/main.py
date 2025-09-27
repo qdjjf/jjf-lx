@@ -325,3 +325,8 @@ def open_browser():
     except Exception as e:
         # 捕获其他可能的异常
         log("error", f"尝试打开浏览器时发生未知错误: {e}")
+
+# 保活接口（仅响应 HEAD）
+@app.head("/keepalive")
+async def keepalive() -> Response:
+    return Response(status_code=200)
