@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -26,6 +26,7 @@ import sys
 import pathlib
 import os
 import webbrowser
+
 
 # 设置模板目录
 BASE_DIR = pathlib.Path(__file__).parent
@@ -132,7 +133,10 @@ async def check_remaining_keys_async(keys_to_check: list, initial_invalid_keys: 
 sys.excepthook = handle_exception
 
 # --------------- 事件处理 ---------------
-
+# 保活接口（仅响应 HEAD）
+@app.head("/keepalive")
+async def keepalive() -> Response:
+    return Response(status_code=200)
 
 @app.on_event("startup")
 async def startup_event():
@@ -326,7 +330,4 @@ def open_browser():
         # 捕获其他可能的异常
         log("error", f"尝试打开浏览器时发生未知错误: {e}")
 
-# 保活接口（仅响应 HEAD）
-@app.head("/keepalive")
-async def keepalive() -> Response:
-    return Response(status_code=200)
+
